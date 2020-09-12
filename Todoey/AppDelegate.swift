@@ -1,9 +1,9 @@
 //
-//  AppDelegate.swift
-//  Destini
+//  CategoryViewController.swift
+//  Todoey
 //
-//  Created by Philipp Muellauer on 01/09/2015.
-//  Copyright (c) 2015 London App Brewery. All rights reserved.
+//  Created by Dmitriy Chernov on 11.09.2020.
+//  Copyright © 2020. All rights reserved.
 //
 
 import UIKit
