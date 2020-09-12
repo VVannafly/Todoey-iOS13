@@ -14,6 +14,7 @@ class TodoListViewController: SwipeTableViewController {
     let realm = try! Realm()
     
     var todoItems: Results<Item>?
+    @IBOutlet weak var searchBar: UISearchBar!
     
     var selectedCategory: Category? {
         didSet {
@@ -24,6 +25,11 @@ class TodoListViewController: SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        title = selectedCategory!.name
+        searchBar.barTintColor = FlatSkyBlue()
     }
     
     //MARK: - Tableview Datasource Methods

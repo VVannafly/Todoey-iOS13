@@ -14,7 +14,7 @@ class SwipeTableViewController: UITableViewController {
         super.viewDidLoad()
 
     }
-
+    
     //TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
