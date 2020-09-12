@@ -11,7 +11,7 @@ import RealmSwift
 
 class Category: Object {
     @objc dynamic var name: String = ""
-
+    @objc dynamic var color: String = ""
     //reference to Item class
     let items = List<Item>()
 }

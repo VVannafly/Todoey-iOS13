@@ -7,8 +7,9 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     
     let realm = try! Realm()
     
@@ -22,7 +23,7 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    // Do any additional setup after loading the view.
+        // Do any additional setup after loading the view.
     }
     
     //MARK: - Tableview Datasource Methods
@@ -34,12 +35,21 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         if let item = todoItems?[indexPath.row] {
             
-            cell.accessoryType = item.done == true ? .checkmark : .none
+            cell.accessoryType = item.done ? .checkmark : .none
             cell.textLabel?.text = item.title
+            
+            if let color = FlatSkyBlue().darken(byPercentage:
+                CGFloat(Float(indexPath.row) / Float(todoItems!.count)))
+            {
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
+            
+            
         } else {
             cell.textLabel?.text = "No Items Added"
         }
@@ -59,7 +69,7 @@ class TodoListViewController: UITableViewController {
                 print("Error saving done status, \(error)")
             }
         }
-
+        
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.reloadData()
     }
@@ -107,24 +117,36 @@ class TodoListViewController: UITableViewController {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true) //Sorting by dateCreated
         tableView.reloadData()
     }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    realm.delete(item)
+                }
+            } catch {
+                print("Error deleting cell \(error)")
+            }
+        }
+    }
 }
 
 //MARK: - Search bar methods
 
 extension TodoListViewController: UISearchBarDelegate {
-
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         todoItems = todoItems?.filter("title CONTAINS[cd] $@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
         
         tableView.reloadData()
     }
-
-
+    
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
             loadItems()
-
+            
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()
             }
